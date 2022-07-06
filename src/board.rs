@@ -38,17 +38,15 @@ impl Board {
         &self.layout
     }
 
-    pub fn move_piece(&mut self, p_sq: &Coord, n_sq: &Coord) -> Result<(), &str> {
-        if ((p_sq.x | n_sq.x) > self.layout[0].len() - 1)
-            | ((p_sq.y | n_sq.y) > self.layout.len() - 1)
-        {
+    pub fn move_piece(&mut self, old_pos: &Coord, new_pos: &Coord) -> Result<(), &str> {
+        if ((old_pos.x | new_pos.x) > BOARD_SIZE - 1) | ((old_pos.y | new_pos.y) > BOARD_SIZE - 1) {
             return Err("Coordinates entered are out of bounds!");
         }
         let square = mem::replace(
-            &mut self.layout[self.layout.len() - 1 - p_sq.y][p_sq.x],
+            &mut self.layout[BOARD_SIZE - 1 - old_pos.y][old_pos.x],
             Square::Empty,
         );
-        self.layout[self.layout.len() - 1 - n_sq.y][n_sq.x] = square;
+        self.layout[BOARD_SIZE - 1 - new_pos.y][new_pos.x] = square;
         Ok(())
     }
 }
