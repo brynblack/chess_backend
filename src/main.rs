@@ -1,9 +1,9 @@
-use chess_backend::{Board, Coord, Layouts};
+use chess_backend::{Board, Layouts, Position};
 
 fn main() {
     let mut board = Board::new(Layouts::standard());
 
-    match board.move_piece(&Coord { x: 0, y: 1 }, &Coord { x: 0, y: 2 }) {
+    match board.move_piece(&Position { x: 0, y: 1 }, &Position { x: 0, y: 2 }) {
         Ok(_) => (),
         Err(err) => eprintln!("{}", err),
     }

@@ -2,7 +2,7 @@ use std::mem;
 
 const BOARD_SIZE: usize = 8;
 
-pub struct Coord {
+pub struct Position {
     pub x: usize,
     pub y: usize,
 }
@@ -38,7 +38,7 @@ impl Board {
         &self.layout
     }
 
-    pub fn move_piece(&mut self, old_pos: &Coord, new_pos: &Coord) -> Result<(), &str> {
+    pub fn move_piece(&mut self, old_pos: &Position, new_pos: &Position) -> Result<(), &str> {
         if ((old_pos.x | new_pos.x) > BOARD_SIZE - 1) | ((old_pos.y | new_pos.y) > BOARD_SIZE - 1) {
             return Err("Coordinates entered are out of bounds!");
         }
