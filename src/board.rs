@@ -1,7 +1,3 @@
-use std::mem;
-
-const BOARD_SIZE: usize = 8;
-
 pub struct Position {
     pub x: usize,
     pub y: usize,
@@ -26,27 +22,19 @@ pub enum Square {
 
 #[derive(Debug)]
 pub struct Board {
-    layout: [[Square; BOARD_SIZE]; BOARD_SIZE],
+    layout: Vec<Vec<Square>>,
 }
 
 impl Board {
-    pub fn new(layout: [[Square; BOARD_SIZE]; BOARD_SIZE]) -> Board {
+    pub fn new(layout: Vec<Vec<Square>>) -> Board {
         Board { layout }
     }
 
-    pub fn get_layout(&self) -> &[[Square; BOARD_SIZE]; BOARD_SIZE] {
+    pub fn get_layout(&self) -> &Vec<Vec<Square>> {
         &self.layout
     }
 
     pub fn move_piece(&mut self, old_pos: &Position, new_pos: &Position) -> Result<(), &str> {
-        if ((old_pos.x | new_pos.x) > BOARD_SIZE - 1) | ((old_pos.y | new_pos.y) > BOARD_SIZE - 1) {
-            return Err("Coordinates entered are out of bounds!");
-        }
-        let square = mem::replace(
-            &mut self.layout[BOARD_SIZE - 1 - old_pos.y][old_pos.x],
-            Square::Empty,
-        );
-        self.layout[BOARD_SIZE - 1 - new_pos.y][new_pos.x] = square;
         Ok(())
     }
 }
