@@ -44,7 +44,15 @@ impl Board {
             None => return Err("Out of bounds access!"),
         };
         let moved_piece = std::mem::replace(old_square, Square::Empty);
-        self.layout[new_pos.y][new_pos.x] = moved_piece;
+        let new_rank = match self.layout.get_mut(new_pos.y) {
+            Some(rank) => rank,
+            None => return Err("Out of bounds access!"),
+        };
+        let new_square = match new_rank.get_mut(new_pos.x) {
+            Some(square) => square,
+            None => return Err("Out of bounds access!"),
+        };
+        *new_square = moved_piece;
         Ok(())
     }
 }
