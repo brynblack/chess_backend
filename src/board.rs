@@ -1,3 +1,5 @@
+use crate::Layouts;
+
 pub struct Position {
     pub x: usize,
     pub y: usize,
@@ -25,9 +27,17 @@ pub struct Board {
     layout: Vec<Vec<Square>>,
 }
 
+impl Default for Board {
+    fn default() -> Self {
+        Self {
+            layout: Layouts::standard(),
+        }
+    }
+}
+
 impl Board {
-    pub fn new(layout: Vec<Vec<Square>>) -> Board {
-        Board { layout }
+    pub fn new(layout: Vec<Vec<Square>>) -> Self {
+        Self { layout }
     }
 
     pub fn get_layout(&self) -> &Vec<Vec<Square>> {

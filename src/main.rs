@@ -1,7 +1,7 @@
-use chess_backend::{Board, Layouts, Position};
+use chess_backend::{Board, Position};
 
 fn main() {
-    let mut board = Board::new(Layouts::standard());
+    let mut board = Board::default();
 
     match board.move_piece(&Position { x: 0, y: 1 }, &Position { x: 0, y: 2 }) {
         Ok(_) => (),
