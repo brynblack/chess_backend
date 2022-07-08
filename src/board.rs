@@ -1,4 +1,5 @@
 use crate::layouts::Layouts;
+use std::mem;
 
 pub struct Position {
     pub x: usize,
@@ -57,7 +58,7 @@ impl Board {
         if self.layout[new_pos.y].get(new_pos.x).is_none() {
             return Err("Error: Destination square is out of bounds!");
         }
-        let moved_piece = std::mem::replace(&mut self.layout[old_pos.y][old_pos.x], Square::Empty);
+        let moved_piece = mem::replace(&mut self.layout[old_pos.y][old_pos.x], Square::Empty);
         self.layout[new_pos.y][new_pos.x] = moved_piece;
         Ok(())
     }
