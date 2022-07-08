@@ -1,4 +1,4 @@
-use crate::Layouts;
+use crate::layouts::Layouts;
 
 pub struct Position {
     pub x: usize,

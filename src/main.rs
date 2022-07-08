@@ -1,4 +1,4 @@
-use chess_backend::{Board, Position};
+use chess_backend::board::{Board, Position};
 
 fn main() {
     let mut board = Board::default();
