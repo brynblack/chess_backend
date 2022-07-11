@@ -3,26 +3,37 @@ use std::mem;
 /// A position on a chessboard.
 #[derive(Debug)]
 pub struct Position {
+    /// The x-coordinate.
     pub x: usize,
+    /// The y-coordinate.
     pub y: usize,
 }
 
-#[derive(Debug, PartialEq)]
 /// An enum defining all the possible colours of a chess piece.
+#[derive(Debug, PartialEq)]
 pub enum Colour {
+    /// The colour black.
     Black,
+    /// The colour white.
     White,
 }
 
-#[derive(Debug, PartialEq)]
 /// An enum defining the state of a square on a chessboard.
+#[derive(Debug, PartialEq)]
 pub enum Square {
+    /// An empty square.
     Empty,
+    /// A Bishop.
     Bishop(Colour),
+    /// A King.
     King(Colour),
+    /// A Knight.
     Knight(Colour),
+    /// A Pawn.
     Pawn(Colour),
+    /// A Queen.
     Queen(Colour),
+    /// A Rook.
     Rook(Colour),
 }
 
@@ -41,8 +52,8 @@ impl Square {
     }
 }
 
-#[derive(Debug)]
 /// A chessboard.
+#[derive(Debug)]
 pub struct Board {
     layout: Vec<Vec<Square>>,
     player: Colour,
