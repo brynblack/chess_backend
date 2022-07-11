@@ -111,6 +111,13 @@ impl Board {
             return Err("Error: You cannot move your opponent's pieces!");
         }
 
+        // Trying to destroy your own pieces check...
+        if self.layout[old_pos.y][old_pos.x].get_colour().unwrap()
+            == self.layout[new_pos.y][new_pos.x].get_colour().unwrap()
+        {
+            return Err("Error: You cannot move your own piece onto another one of your pieces!");
+        }
+
         // Valid piece move checks here...
 
         Ok(())
