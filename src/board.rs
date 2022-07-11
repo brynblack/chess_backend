@@ -1,6 +1,6 @@
 use std::mem;
 
-/// A position on a chessboard.
+/// A position on the chessboard.
 #[derive(Debug)]
 pub struct Position {
     /// The x-coordinate.
@@ -9,82 +9,88 @@ pub struct Position {
     pub y: usize,
 }
 
-/// An enum defining all the possible colours of a chess piece.
+/// A square on the chessboard.
+#[derive(Debug)]
+pub enum Square {
+    /// An empty square.
+    Empty,
+    /// A square with a piece on it.
+    Piece {
+        /// The colour of the piece.
+        piece_colour: PieceColour,
+        /// The type of the piece.
+        piece_type: PieceType,
+    },
+}
+
+/// The colour of a piece.
 #[derive(Debug, PartialEq)]
-pub enum Colour {
+pub enum PieceColour {
     /// The colour black.
     Black,
     /// The colour white.
     White,
 }
 
-/// An enum defining the state of a square on a chessboard.
-#[derive(Debug, PartialEq)]
-pub enum Square {
-    /// An empty square.
-    Empty,
+/// The type of a piece.
+#[derive(Debug)]
+pub enum PieceType {
     /// A Bishop.
-    Bishop(Colour),
+    Bishop,
     /// A King.
-    King(Colour),
+    King,
     /// A Knight.
-    Knight(Colour),
+    Knight,
     /// A Pawn.
-    Pawn(Colour),
+    Pawn,
     /// A Queen.
-    Queen(Colour),
+    Queen,
     /// A Rook.
-    Rook(Colour),
+    Rook,
 }
 
 impl Square {
-    /// Returns an optional value containing a reference to the colour of the piece.
-    pub fn get_colour(&self) -> Option<&Colour> {
+    /// Returns an optional value containing a reference to the colour of the piece, if it is a piece.
+    pub fn get_colour(&self) -> Option<&PieceColour> {
         match self {
             Square::Empty => None,
-            Square::Bishop(colour) => Some(colour),
-            Square::King(colour) => Some(colour),
-            Square::Knight(colour) => Some(colour),
-            Square::Pawn(colour) => Some(colour),
-            Square::Queen(colour) => Some(colour),
-            Square::Rook(colour) => Some(colour),
+            Square::Piece { piece_colour, .. } => Some(piece_colour),
         }
     }
 }
 
 /// A chessboard.
-#[derive(Debug)]
 pub struct Board {
     layout: Vec<Vec<Square>>,
-    player: Colour,
+    player: PieceColour,
 }
 
 impl Default for Board {
     fn default() -> Self {
         Self {
             layout: Layouts::standard(),
-            player: Colour::White,
+            player: PieceColour::White,
         }
     }
 }
 
 impl Board {
-    /// Creates a new chessboard with the given layout and initial player.
-    pub fn new(layout: Vec<Vec<Square>>, player: Colour) -> Self {
+    /// Creates a new chessboard with the given layout and the default player specified.
+    pub fn new(layout: Vec<Vec<Square>>, player: PieceColour) -> Self {
         Self { layout, player }
     }
 
-    /// Returns a reference to the current state of the chessboard.
+    /// Returns a reference to the current chessboard layout.
     pub fn get_layout(&self) -> &Vec<Vec<Square>> {
         &self.layout
     }
 
     /// Returns a reference to the current player.
-    pub fn get_player(&self) -> &Colour {
+    pub fn get_player(&self) -> &PieceColour {
         &self.player
     }
 
-    /// Moves a piece from one place to another on the chessboard.
+    /// Moves a piece on the chessboard from one position to another.
     pub fn move_piece(&mut self, old_pos: &Position, new_pos: &Position) -> Result<(), &str> {
         if let Err(err) = self.is_valid_move(old_pos, new_pos) {
             return Err(err);
@@ -95,7 +101,6 @@ impl Board {
         Ok(())
     }
 
-    /// Returns a result on whether or not a move is valid.
     fn is_valid_move<'a>(&self, old_pos: &Position, new_pos: &Position) -> Result<(), &'a str> {
         // Bounds checks here...
         // This must always go first, as later on, the [] operator is used to access squares, which can panic if out of bounds.
@@ -139,16 +144,15 @@ impl Board {
         Ok(())
     }
 
-    /// Switches to the next player.
     fn next_turn(&mut self) {
         self.player = match self.player {
-            Colour::Black => Colour::White,
-            Colour::White => Colour::Black,
+            PieceColour::Black => PieceColour::White,
+            PieceColour::White => PieceColour::Black,
         }
     }
 }
 
-/// Pre-made layouts ready to use for creating a new chessboard.
+/// Contains pre-made layouts that can be used when creating a custom chessboard.
 pub struct Layouts;
 
 impl Layouts {
@@ -156,24 +160,72 @@ impl Layouts {
     pub fn standard() -> Vec<Vec<Square>> {
         vec![
             vec![
-                Square::Rook(Colour::Black),
-                Square::Knight(Colour::Black),
-                Square::Bishop(Colour::Black),
-                Square::Queen(Colour::Black),
-                Square::King(Colour::Black),
-                Square::Bishop(Colour::Black),
-                Square::Knight(Colour::Black),
-                Square::Rook(Colour::Black),
+                Square::Piece {
+                    piece_type: PieceType::Rook,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Knight,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Bishop,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Queen,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::King,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Bishop,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Knight,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Rook,
+                    piece_colour: PieceColour::Black,
+                },
             ],
             vec![
-                Square::Pawn(Colour::Black),
-                Square::Pawn(Colour::Black),
-                Square::Pawn(Colour::Black),
-                Square::Pawn(Colour::Black),
-                Square::Pawn(Colour::Black),
-                Square::Pawn(Colour::Black),
-                Square::Pawn(Colour::Black),
-                Square::Pawn(Colour::Black),
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::Black,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::Black,
+                },
             ],
             vec![
                 Square::Empty,
@@ -216,24 +268,96 @@ impl Layouts {
                 Square::Empty,
             ],
             vec![
-                Square::Pawn(Colour::White),
-                Square::Pawn(Colour::White),
-                Square::Pawn(Colour::White),
-                Square::Pawn(Colour::White),
-                Square::Pawn(Colour::White),
-                Square::Pawn(Colour::White),
-                Square::Pawn(Colour::White),
-                Square::Pawn(Colour::White),
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Pawn,
+                    piece_colour: PieceColour::White,
+                },
             ],
             vec![
-                Square::Rook(Colour::White),
-                Square::Knight(Colour::White),
-                Square::Bishop(Colour::White),
-                Square::Queen(Colour::White),
-                Square::King(Colour::White),
-                Square::Bishop(Colour::White),
-                Square::Knight(Colour::White),
-                Square::Rook(Colour::White),
+                Square::Piece {
+                    piece_type: PieceType::Rook,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Knight,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Bishop,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Queen,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::King,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Bishop,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Knight,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Rook,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Bishop,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Queen,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::King,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Bishop,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Knight,
+                    piece_colour: PieceColour::White,
+                },
+                Square::Piece {
+                    piece_type: PieceType::Rook,
+                    piece_colour: PieceColour::White,
+                },
             ],
         ]
     }
