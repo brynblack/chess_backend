@@ -1,3 +1,19 @@
+// chess_backend - A library for creating and managing a chessboard, written in Rust.
+// Copyright (C) 2022  Brynley Llewellyn-Roux
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 use std::mem;
 
 /// A position on the chessboard.
@@ -50,7 +66,7 @@ pub enum PieceType {
 }
 
 impl Square {
-    /// Returns an optional value containing a reference to the colour of the piece, if it is a piece.
+    /// Returns an optional value containing a reference to the colour of the piece.
     pub fn get_colour(&self) -> Option<&PieceColour> {
         match self {
             Square::Empty => None,
@@ -102,8 +118,7 @@ impl Board {
     }
 
     fn is_valid_move<'a>(&self, old_pos: &Position, new_pos: &Position) -> Result<(), &'a str> {
-        // Bounds checks here...
-        // This must always go first, as later on, the [] operator is used to access squares, which can panic if out of bounds.
+        // Check if either given positions are out of the bounds of the chessboard.
         if self.layout.get(old_pos.y).is_none() {
             return Err("Error: Origin square is out of bounds!");
         }
@@ -119,20 +134,22 @@ impl Board {
 
         let old_square = &self.layout[old_pos.y][old_pos.x];
         let new_square = &self.layout[new_pos.y][new_pos.x];
-
-        // Empty square check
+        
+        // Check if player is trying to move an empty square.
         if let Square::Empty = old_square {
             return Err("Error: An empty square cannot be moved!");
         }
+        
+        let old_square_colour = old_square.get_colour().unwrap();
 
-        // Not your piece check...
-        if old_square.get_colour().unwrap() != &self.player {
+        // Check if player is trying to move opponent's pieces.
+        if old_square_colour != &self.player {
             return Err("Error: You cannot move your opponent's pieces!");
         }
 
-        // Trying to destroy your own pieces check...
-        if let Some(new_square) = new_square.get_colour() {
-            if old_square.get_colour().unwrap() == new_square {
+        // Check if player is trying to move one of their pieces onto another one of their pieces.
+        if let Some(new_square_colour) = new_square.get_colour() {
+            if old_square_colour == new_square_colour {
                 return Err(
                     "Error: You cannot move your own piece onto another one of your pieces!",
                 );

@@ -1,4 +1,4 @@
-use chess_backend::board::{Board, Position};
+use chess_framework::board::{Board, Position};
 
 fn main() {
     let mut board = Board::default();
@@ -8,7 +8,9 @@ fn main() {
     }
 
     for rank in board.get_layout() {
-        println!("{:?}", rank);
+        for square in rank {
+            println!("{:?}", square);
+        }
     }
 
     println!("Current player: {:?}", board.get_player());
