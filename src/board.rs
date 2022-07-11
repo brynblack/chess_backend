@@ -101,22 +101,27 @@ impl Board {
             return Err("Error: Destination square is out of bounds!");
         }
 
+        let old_square = &self.layout[old_pos.y][old_pos.x];
+        let new_square = &self.layout[new_pos.y][new_pos.x];
+
         // Empty square check
-        if let Square::Empty = self.layout[old_pos.y][old_pos.x] {
+        if let Square::Empty = old_square {
             return Err("Error: An empty square cannot be moved!");
         }
 
         // Not your piece check...
-        if self.layout[old_pos.y][old_pos.x].get_colour().unwrap() != &self.player {
+        if old_square.get_colour().unwrap() != &self.player {
             return Err("Error: You cannot move your opponent's pieces!");
         }
 
         // Trying to destroy your own pieces check...
-        if self.layout[old_pos.y][old_pos.x].get_colour().unwrap()
-            == self.layout[new_pos.y][new_pos.x].get_colour().unwrap()
-        {
-            return Err("Error: You cannot move your own piece onto another one of your pieces!");
-        }
+        if let Some(new_square) = new_square.get_colour() {
+            if old_square.get_colour().unwrap() == new_square {
+                return Err(
+                    "Error: You cannot move your own piece onto another one of your pieces!",
+                );
+            }
+        };
 
         // Valid piece move checks here...
 
